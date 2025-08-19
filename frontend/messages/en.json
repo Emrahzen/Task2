@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "products": "Products",
+    "cart": "Cart",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "Welcome to Task2 Shop",
+    "cta": {
+      "browse": "Browse products",
+      "register": "Create account"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "register": "Sign up"
+    },
+    "register": {
+      "title": "Create Account",
+      "name": "Full Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Sign Up",
+      "hasAccount": "Already have an account?",
+      "login": "Sign in"
+    }
+  },
+  "products": {
+    "title": "Products",
+    "addNew": "Add New Product",
+    "filters": {
+      "search": "Search...",
+      "category": "Category",
+      "minPrice": "Min Price",
+      "maxPrice": "Max Price",
+      "sortBy": "Sort By",
+      "sortOptions": {
+        "price_asc": "Price: Low to High",
+        "price_desc": "Price: High to Low",
+        "name_asc": "Name: A to Z",
+        "name_desc": "Name: Z to A"
+      },
+      "apply": "Filter",
+      "clear": "Clear Filters"
+    },
+    "noProducts": "No products found yet.",
+    "addFirstProduct": "Click 'Add New Product' to add your first product.",
+    "stock": "Stock",
+    "price": "Price"
+  },
+  "product": {
+    "create": {
+      "title": "Add New Product",
+      "name": "Product Name",
+      "description": "Description",
+      "price": "Price",
+      "stockQuantity": "Stock Quantity",
+      "imageUrl": "Image URL",
+      "category": "Category",
+      "brand": "Brand",
+      "submit": "Add Product",
+      "loading": "Adding...",
+      "required": "This field is required"
+    },
+    "detail": {
+      "backToProducts": "Back to Products",
+      "addToCart": "Add to Cart",
+      "stock": "Stock",
+      "category": "Category",
+      "brand": "Brand"
+    }
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty.",
+    "goToProducts": "Go to Products",
+    "items": "Items",
+    "total": "Total",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "quantity": "Quantity"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back"
+  }
+}

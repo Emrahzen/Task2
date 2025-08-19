@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "products": "Ürünler",
+    "cart": "Sepet",
+    "login": "Giriş",
+    "logout": "Çıkış"
+  },
+  "home": {
+    "title": "Task2 Mağaza'ya Hoş Geldiniz",
+    "cta": {
+      "browse": "Ürünlere göz at",
+      "register": "Hesap oluştur"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Giriş Yap",
+      "email": "E-posta",
+      "password": "Şifre",
+      "submit": "Giriş Yap",
+      "noAccount": "Hesabınız yok mu?",
+      "register": "Kayıt ol"
+    },
+    "register": {
+      "title": "Hesap Oluştur",
+      "name": "Ad Soyad",
+      "email": "E-posta",
+      "password": "Şifre",
+      "confirmPassword": "Şifre Tekrar",
+      "submit": "Kayıt Ol",
+      "hasAccount": "Zaten hesabınız var mı?",
+      "login": "Giriş yap"
+    }
+  },
+  "products": {
+    "title": "Ürünler",
+    "addNew": "Yeni Ürün Ekle",
+    "filters": {
+      "search": "Ara...",
+      "category": "Kategori",
+      "minPrice": "Min Fiyat",
+      "maxPrice": "Max Fiyat",
+      "sortBy": "Sırala",
+      "sortOptions": {
+        "price_asc": "Fiyat: Düşükten Yükseğe",
+        "price_desc": "Fiyat: Yüksekten Düşüğe",
+        "name_asc": "İsim: A'dan Z'ye",
+        "name_desc": "İsim: Z'den A'ya"
+      },
+      "apply": "Filtrele",
+      "clear": "Filtreleri Temizle"
+    },
+    "noProducts": "Henüz ürün bulunamadı.",
+    "addFirstProduct": "İlk ürünü eklemek için 'Yeni Ürün Ekle' butonuna tıklayın.",
+    "stock": "Stok",
+    "price": "Fiyat"
+  },
+  "product": {
+    "create": {
+      "title": "Yeni Ürün Ekle",
+      "name": "Ürün Adı",
+      "description": "Açıklama",
+      "price": "Fiyat",
+      "stockQuantity": "Stok Miktarı",
+      "imageUrl": "Resim URL",
+      "category": "Kategori",
+      "brand": "Marka",
+      "submit": "Ürün Ekle",
+      "loading": "Ekleniyor...",
+      "required": "Bu alan zorunludur"
+    },
+    "detail": {
+      "backToProducts": "Ürünlere Dön",
+      "addToCart": "Sepete Ekle",
+      "stock": "Stok",
+      "category": "Kategori",
+      "brand": "Marka"
+    }
+  },
+  "cart": {
+    "title": "Sepet",
+    "empty": "Sepetiniz boş.",
+    "goToProducts": "Ürünlere Git",
+    "items": "Ürünler",
+    "total": "Toplam",
+    "checkout": "Ödemeye Geç",
+    "remove": "Kaldır",
+    "quantity": "Adet"
+  },
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Hata oluştu",
+    "success": "Başarılı",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "back": "Geri"
+  }
+}
