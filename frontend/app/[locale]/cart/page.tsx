@@ -1,14 +1,17 @@
 "use client"
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '@/store'
 import { addItem, removeItem, decrementItem, clearCart } from '@/store/slices/cartSlice'
+import { Constants } from '@/lib/constants'
 
 export default function CartPage({ params: { locale } }: { params: { locale: string } }) {
   const router = useRouter()
   const dispatch = useDispatch()
   const cartItems = useSelector((state: RootState) => state.cart.items)
+  const [mounted, setMounted] = React.useState(false)
+  React.useEffect(() => setMounted(true), [])
   
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -17,7 +20,7 @@ export default function CartPage({ params: { locale } }: { params: { locale: str
     }
   }, [router, locale])
 
-  const totalPrice = cartItems.reduce((total, item) => total + (item.price * (item.quantity || 1)), 0)
+  const totalPrice = mounted ? cartItems.reduce((total:any, item:any) => total + (item.price * (item.quantity || 1)), 0) : 0
 
   const handleRemoveItem = (id: number) => {
     dispatch(removeItem(id))
@@ -47,7 +50,7 @@ export default function CartPage({ params: { locale } }: { params: { locale: str
         )}
       </div>
 
-      {cartItems.length === 0 ? (
+      {!mounted ? null : cartItems.length === 0 ? (
         <div className="text-center py-12">
           <div className="text-gray-500 text-lg">
             {locale === 'tr' ? 'Sepetiniz boş.' : 'Your cart is empty.'}
@@ -64,13 +67,13 @@ export default function CartPage({ params: { locale } }: { params: { locale: str
         </div>
       ) : (
         <div className="space-y-4">
-          {cartItems.map((item) => (
+          {cartItems.map((item:any) => (
             <div key={item.id} className="bg-white p-4 rounded-lg shadow border">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   {item.imageUrl && (
                     <img 
-                      src={item.imageUrl} 
+                      src={Constants.getImageUrl(item.imageUrl)} 
                       alt={item.name} 
                       className="w-16 h-16 object-cover rounded"
                     />
@@ -89,8 +92,9 @@ export default function CartPage({ params: { locale } }: { params: { locale: str
                   </button>
                   <span className="w-8 text-center">{item.quantity || 1}</span>
                   <button
-                    onClick={() => dispatch(addItem({ id: item.id, name: item.name, price: item.price, imageUrl: item.imageUrl }))}
-                    className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center"
+                    onClick={() => dispatch(addItem({ id: item.id, name: item.name, price: item.price, imageUrl: item.imageUrl, stockQuantity: item.stockQuantity }))}
+                    disabled={(item.quantity || 1) >= (item.stockQuantity ?? Infinity)}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center ${((item.quantity || 1) >= (item.stockQuantity ?? Infinity)) ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 hover:bg-gray-300'}`}
                   >
                     +
                   </button>

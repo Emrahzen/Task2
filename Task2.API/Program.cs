@@ -11,6 +11,10 @@ using Task2.Core.Interfaces;
 using Task2.Infrastructure.Data;
 using Task2.Infrastructure.Repositories;
 using Task2.Infrastructure.Services;
+using Microsoft.Extensions.FileProviders;
+using System.Net;
+using System.IO;
+using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,6 +96,11 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
+if (jwtSettings == null || string.IsNullOrWhiteSpace(jwtSettings.SecretKey))
+{
+    throw new InvalidOperationException("JwtSettings are not configured. Please set JwtSettings in appsettings.json");
+}
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -128,6 +137,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+	app.UseDeveloperExceptionPage();
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
@@ -139,16 +149,50 @@ if (!app.Environment.IsDevelopment())
 	app.UseHttpsRedirection();
 }
 
+// Ensure images folder exists
+var imagesPath = Path.Combine(app.Environment.ContentRootPath, "Image");
+if (!Directory.Exists(imagesPath))
+{
+	Directory.CreateDirectory(imagesPath);
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseExceptionHandler("/error");
+if (!app.Environment.IsDevelopment())
+{
+	app.UseExceptionHandler("/error");
+}
+
+// Serve images by GUID at '/image/{guid}' regardless of file extension
+app.MapGet("/image/{guid}", (string guid, IWebHostEnvironment env) =>
+{
+	var imagesRoot = Path.Combine(env.ContentRootPath, "Image");
+	if (!Directory.Exists(imagesRoot))
+	{
+		return Results.NotFound();
+	}
+	var matches = Directory.GetFiles(imagesRoot, guid + ".*");
+	if (matches.Length == 0)
+	{
+		return Results.NotFound();
+	}
+	var filePath = matches[0];
+	var provider = new FileExtensionContentTypeProvider();
+	if (!provider.TryGetContentType(filePath, out var contentType))
+	{
+		contentType = "application/octet-stream";
+	}
+	return Results.File(filePath, contentType);
+});
 
 try
 {
 	Log.Information("Starting Task2 API");
+	var address = $"http://{IPAddress.Any.ToString()}:7080";
+	app.Urls.Add(address);
 	app.Run();
 }
 catch (Exception ex)

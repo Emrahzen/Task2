@@ -6,6 +6,7 @@ type CartItem = {
   price: number
   imageUrl?: string
   quantity?: number
+  stockQuantity?: number
 }
 
 type CartState = {
@@ -20,12 +21,22 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
+    hydrate(state, action: PayloadAction<CartState>) {
+      state.items = action.payload.items || []
+    },
     addItem(state, action: PayloadAction<CartItem>) {
       const existing = state.items.find(i => i.id === action.payload.id)
       if (existing) {
-        existing.quantity = (existing.quantity || 1) + 1
+        const maxQty = existing.stockQuantity ?? Infinity
+        const current = existing.quantity || 1
+        if (current < maxQty) {
+          existing.quantity = current + 1
+        }
       } else {
-        state.items.push({ ...action.payload, quantity: 1 })
+        const initialQty = (action.payload.stockQuantity ?? 0) > 0 ? 1 : 0
+        if (initialQty > 0) {
+          state.items.push({ ...action.payload, quantity: initialQty })
+        }
       }
     },
     removeItem(state, action: PayloadAction<number>) {
@@ -46,5 +57,5 @@ const cartSlice = createSlice({
   }
 })
 
-export const { addItem, removeItem, decrementItem, clearCart } = cartSlice.actions
+export const { hydrate, addItem, removeItem, decrementItem, clearCart } = cartSlice.actions
 export default cartSlice.reducer

@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { Metadata } from 'next'
+import Link from 'next/link'
 import AddToCartButton from '@/components/AddToCartButton'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import { Constants } from '@/lib/constants'
@@ -39,20 +40,19 @@ export default async function ProductDetailPage({ params: { id, locale } }: { pa
   return (
     <ErrorBoundary>
       <div className="mb-6">
-        <a 
-          href={`/${locale}/products`}
-          className="text-blue-600 hover:text-blue-800 inline-flex items-center"
-        >
-          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          {locale === 'tr' ? 'Ürünlere Dön' : 'Back to Products'}
-        </a>
+        <Link href={`/${locale}/products`} legacyBehavior>
+          <a className="text-blue-600 hover:text-blue-800 inline-flex items-center">
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            {locale === 'tr' ? 'Ürünlere Dön' : 'Back to Products'}
+          </a>
+        </Link>
       </div>
       
       <div className="grid md:grid-cols-2 gap-6">
         <div className="relative w-full h-80 md:h-[480px]">
-          <Image src={product.imageUrl || 'https://via.placeholder.com/800x600'} alt={product.name} fill className="object-cover rounded" />
+          <Image src={Constants.getImageUrl(product.imageUrl)} alt={product.name} fill className="object-cover rounded" />
         </div>
         <div>
           <h1 className="text-2xl font-semibold mb-2">{product.name}</h1>

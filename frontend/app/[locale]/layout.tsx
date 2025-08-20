@@ -1,5 +1,5 @@
 "use client"
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import Link from 'next/link'
 import { NextIntlClientProvider } from 'next-intl'
 import { usePathname } from 'next/navigation'
@@ -10,7 +10,11 @@ import { RootState } from '@/store'
 
 function Header({ locale }: { locale: string }) {
   const cartItems = useSelector((state: RootState) => state.cart.items)
-  const totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0)
+  // Avoid SSR/CSR mismatch by computing after mount
+  const [totalItems, setTotalItems] = React.useState<number>(0)
+  React.useEffect(() => {
+    setTotalItems(cartItems.reduce((total, item) => total + (item.quantity || 1), 0))
+  }, [cartItems])
   return (
     <header className="border-b bg-white shadow-sm">
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
@@ -23,11 +27,12 @@ function Header({ locale }: { locale: string }) {
           </Link>
           <Link href={`/${locale}/cart`} className="text-gray-700 hover:text-gray-900 transition-colors relative">
             {locale === 'tr' ? 'Sepet' : 'Cart'}
-            {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {totalItems}
-              </span>
-            )}
+            <span
+              suppressHydrationWarning
+              className={`absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center ${totalItems > 0 ? '' : 'invisible'}`}
+            >
+              {totalItems}
+            </span>
           </Link>
           <LanguageSwitcher currentLocale={locale} />
           <LogoutButton locale={locale} />

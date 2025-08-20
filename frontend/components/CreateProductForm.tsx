@@ -7,7 +7,6 @@ interface CreateProductFormData {
   description: string
   price: number
   stockQuantity: number
-  imageUrl: string
   category: string
   brand: string
 }
@@ -18,12 +17,12 @@ export default function CreateProductForm({ locale = 'tr' }: { locale?: string }
     description: '',
     price: 0,
     stockQuantity: 0,
-    imageUrl: '',
     category: '',
     brand: ''
   })
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const [file, setFile] = useState<File | null>(null)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -45,13 +44,23 @@ export default function CreateProductForm({ locale = 'tr' }: { locale?: string }
         return
       }
 
+      // Single request: send file with other fields
+
+      const form = new FormData()
+      form.append('name', formData.name)
+      form.append('description', formData.description)
+      form.append('price', String(formData.price))
+      form.append('stockQuantity', String(formData.stockQuantity))
+      form.append('category', formData.category)
+      form.append('brand', formData.brand)
+      if (file) form.append('file', file)
+
       const response = await fetch(Constants.getApiUrl(Constants.API_ENDPOINTS.PRODUCT.CREATE), {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(formData)
+        body: form
       })
 
       if (response.ok) {
@@ -62,16 +71,30 @@ export default function CreateProductForm({ locale = 'tr' }: { locale?: string }
           description: '',
           price: 0,
           stockQuantity: 0,
-          imageUrl: '',
           category: '',
           brand: ''
         })
+        setFile(null)
       } else {
-        const errorData = await response.json()
-        setMessage(`Hata: ${errorData.message || (locale === 'tr' ? 'Ürün eklenirken bir hata oluştu' : 'An error occurred while adding the product')}`)
+        let errorText = ''
+        try {
+          errorText = await response.text()
+        } catch (_) {
+          // ignore
+        }
+        console.error('Create product failed', { status: response.status, statusText: response.statusText, body: errorText })
+        let messageText = ''
+        try {
+          const json = JSON.parse(errorText)
+          messageText = json.message
+        } catch (_) {
+          messageText = errorText
+        }
+        setMessage(`Hata: ${messageText || (locale === 'tr' ? 'Ürün eklenirken bir hata oluştu' : 'An error occurred while adding the product')}`)
       }
     } catch (error) {
-              setMessage(locale === 'tr' ? 'Bağlantı hatası oluştu' : 'Connection error occurred')
+      console.error('Create product exception', error)
+      setMessage(locale === 'tr' ? 'Bağlantı hatası oluştu' : 'Connection error occurred')
     } finally {
       setIsLoading(false)
     }
@@ -163,17 +186,16 @@ export default function CreateProductForm({ locale = 'tr' }: { locale?: string }
         </div>
 
         <div>
-          <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
-            {locale === 'tr' ? 'Resim URL' : 'Image URL'}
+          <label htmlFor="imageFile" className="block text-sm font-medium text-gray-700 mb-1">
+            {locale === 'tr' ? 'Resim Yükle' : 'Upload Image'}
           </label>
           <input
-            type="url"
-            id="imageUrl"
-            name="imageUrl"
-            value={formData.imageUrl}
-            onChange={handleInputChange}
+            type="file"
+            id="imageFile"
+            name="imageFile"
+            accept="image/*"
+            onChange={(e) => setFile(e.target.files?.[0] || null)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="https://example.com/image.jpg"
           />
         </div>
 

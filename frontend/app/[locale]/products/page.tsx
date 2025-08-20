@@ -57,6 +57,31 @@ export default function ProductsPage({ params: { locale }, searchParams }: { par
     }
   }
 
+  const handleDelete = async (id: number) => {
+    const token = localStorage.getItem('token')
+    if (!token) return
+    if (!confirm(locale === 'tr' ? 'Bu ürünü silmek istediğinize emin misiniz?' : 'Are you sure you want to delete this product?')) return
+    try {
+      const res = await fetch(Constants.getApiUrl(Constants.API_ENDPOINTS.PRODUCT.DELETE(String(id))), {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      if (res.ok) {
+        setProducts(prev => prev.filter(p => p.id !== id))
+        setFilteredProducts(prev => prev.filter(p => p.id !== id))
+      } else {
+        const txt = await res.text()
+        console.error('Delete failed', res.status, txt)
+        alert(locale === 'tr' ? 'Silme işlemi başarısız.' : 'Delete failed')
+      }
+    } catch (e) {
+      console.error(e)
+      alert(locale === 'tr' ? 'Bağlantı hatası' : 'Connection error')
+    }
+  }
+
   const applyFilters = () => {
     let result = [...products]
 
@@ -247,7 +272,7 @@ export default function ProductsPage({ params: { locale }, searchParams }: { par
               <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                 <div className="relative h-48">
                   <Image 
-                    src={p.imageUrl || 'https://via.placeholder.com/300x200'} 
+                    src={Constants.getImageUrl(p.imageUrl)} 
                     alt={p.name} 
                     fill 
                     className="object-cover group-hover:scale-105 transition-transform duration-300" 
@@ -260,6 +285,11 @@ export default function ProductsPage({ params: { locale }, searchParams }: { par
                   <div className="text-sm text-gray-600 mb-2">{p.category || '-'}</div>
                   <div className="text-lg font-bold text-blue-600">₺{p.price}</div>
                   <div className="text-sm text-gray-500">{locale === 'tr' ? 'Stok' : 'Stock'}: {p.stockQuantity}</div>
+                  <div className="mt-3 flex justify-end">
+                    <button onClick={(e) => { e.preventDefault(); handleDelete(p.id) }} className="text-red-600 hover:text-red-700 text-sm">
+                      {locale === 'tr' ? 'Sil' : 'Delete'}
+                    </button>
+                  </div>
                 </div>
               </div>
             </Link>

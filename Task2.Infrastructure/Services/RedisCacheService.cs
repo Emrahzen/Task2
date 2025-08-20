@@ -88,11 +88,11 @@ namespace Task2.Infrastructure.Services
             }
             catch (RedisConnectionException)
             {
-                // Redis bağlantısı yok, cache olmadan devam et
+               
             }
             catch (Exception)
             {
-                // Diğer Redis hataları için de cache olmadan devam et
+                
             }
         }
 

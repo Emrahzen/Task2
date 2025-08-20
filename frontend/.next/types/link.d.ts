@@ -32,9 +32,9 @@ declare namespace __next_route_internal_types__ {
     | `/`
   type DynamicRoutes<T extends string = string> = 
     | `/${SafeSlug<T>}`
-    | `/${SafeSlug<T>}/cart`
     | `/${SafeSlug<T>}/auth/login`
     | `/${SafeSlug<T>}/auth/register`
+    | `/${SafeSlug<T>}/cart`
     | `/${SafeSlug<T>}/products`
     | `/${SafeSlug<T>}/products/${SafeSlug<T>}`
     | `/${SafeSlug<T>}/products/create`
