@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import LogoutButton from '@/components/LogoutButton'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import AuthSessionWatcher from '@/components/AuthSessionWatcher'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
 
@@ -49,6 +50,7 @@ export default function LocaleLayout({ children, params: { locale } }: { childre
   return (
     <NextIntlClientProvider locale={locale}>
       <div>
+        <AuthSessionWatcher locale={locale} />
         {!isAuthPage && <Header locale={locale} />}
         <main className={isAuthPage ? "" : "container mx-auto py-6 px-4"}>
           {children}

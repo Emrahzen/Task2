@@ -12,8 +12,7 @@ namespace Task2.Application.Validators
                 .EmailAddress().WithMessage("Invalid email format");
 
             RuleFor(x => x.UserRegisterDto.Password)
-                .NotEmpty().WithMessage("Password is required")
-                .MinimumLength(6).WithMessage("Password must be at least 6 characters");
+                .NotEmpty().WithMessage("Password is required");
 
             RuleFor(x => x.UserRegisterDto.FirstName)
                 .NotEmpty().WithMessage("First name is required")

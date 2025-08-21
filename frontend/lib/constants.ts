@@ -14,7 +14,6 @@ export class Constants {
       CREATE: '/api/product',
       UPDATE: (id: string) => `/api/product/${id}`,
       DELETE: (id: string) => `/api/product/${id}`,
-      // No separate upload; image file is sent with product create/update
     }
   };
   
@@ -24,7 +23,6 @@ export class Constants {
 
   static getImageUrl(guidOrName?: string | null): string {
     if (!guidOrName) return 'https://via.placeholder.com/800x600';
-    // API serves images at '/image/{guid}'
     return `${this.API_BASE_URL}/image/${guidOrName}`;
   }
 } 

@@ -1,6 +1,7 @@
 using StackExchange.Redis;
 using System.Text.Json;
 using Task2.Core.Interfaces;
+using Serilog;
 
 namespace Task2.Infrastructure.Services
 {
@@ -25,7 +26,11 @@ namespace Task2.Infrastructure.Services
                 
                 var value = await _database.StringGetAsync(key);
                 if (value.IsNull)
+                {
+                    Log.Information("Redis MISS {CacheKey}", key);
                     return default;
+                }
+                Log.Information("Redis HIT {CacheKey}", key);
 
                 return JsonSerializer.Deserialize<T>(value!);
             }
@@ -47,6 +52,14 @@ namespace Task2.Infrastructure.Services
                 
                 var serializedValue = JsonSerializer.Serialize(value);
                 await _database.StringSetAsync(key, serializedValue, expiration);
+                if (expiration.HasValue)
+                {
+                    Log.Information("Redis SET {CacheKey} (ttl: {TtlSeconds}s)", key, (int)expiration.Value.TotalSeconds);
+                }
+                else
+                {
+                    Log.Information("Redis SET {CacheKey}", key);
+                }
             }
             catch (RedisConnectionException)
             {
@@ -79,8 +92,9 @@ namespace Task2.Infrastructure.Services
                 if (!_isConnected) return;
                 
                 var server = _redis.GetServer(_redis.GetEndPoints().First());
-                var keys = server.Keys(pattern: pattern);
-                
+                var keys = server.Keys(pattern: pattern).ToArray();
+                Log.Information("Redis DEL pattern {Pattern} matched {Count} keys", pattern, keys.Length);
+
                 foreach (var key in keys)
                 {
                     await _database.KeyDeleteAsync(key);
